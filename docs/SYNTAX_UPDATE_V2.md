@@ -140,12 +140,12 @@ highlight link nabcGlyphModifierNumber Number
 
 **Destaque Visual**:
 - `vi`, `pu`, `ta` → Keyword (magenta/roxo)
-- `S`, `G`, `M`, `-`, `>`, `~` → Identifier (azul claro/ciano)
+- `S`, `G`, `M`, `-`, `>`, `~` → SpecialChar (vermelho/magenta)
 - `0`, `1`, `2` → Number (verde)
 
 #### Cores Esperadas (tema padrão Vim)
-- **Dark theme**: Modifiers em azul claro (vs cyan anterior)
-- **Light theme**: Modifiers em azul escuro (vs azul brilhante anterior)
+- **Dark theme**: Modifiers em vermelho/magenta (SpecialChar)
+- **Light theme**: Modifiers em vermelho escuro (SpecialChar)
 
 ---
 
@@ -163,7 +163,7 @@ highlight link nabcSubPrepunctisModifier SpecialChar
 ```vim
 " Atualizado para Type (equivalente a entity.name.class no TextMate)
 highlight link nabcSubPrepunctisBase Type
-highlight link nabcSubPrepunctisModifier Identifier
+highlight link nabcSubPrepunctisModifier SpecialChar
 ```
 
 #### Justificativa
@@ -332,15 +332,15 @@ def-m5: \textsc{macro};     ✅ Funciona agora! (+ número verde)
 |----------------------------|---------------------|----------|
 | `entity.name.tag.header` | `Keyword` | Nome de header |
 | `constant.numeric.integer` | `Number` | Valor numérico |
-| `variable.parameter` | `Identifier` | Glyph modifiers |
-| `entity.name.class` | `Type` | Prepunctis/subpunctis |
+| `entity.name.class` | `Type` | Prepunctis/subpunctis base |
 | `support.function.latex` | `Special` (via @texSyntax) | Comandos LaTeX |
+| `keyword.control` | `SpecialChar` | Glyph modifiers |
 
 ### Paridade de Funcionalidades
 ✅ Headers LaTeX expandidos (19 headers)  
 ✅ Headers numéricos destacados (4 headers)  
-✅ Glyph modifiers como parâmetros  
-✅ Prepunctis/subpunctis como tipos  
+✅ Glyph modifiers mantêm destaque distinto (SpecialChar)  
+✅ Prepunctis/subpunctis como tipos (Type)  
 ✅ LaTeX inline funcionando  
 
 ---

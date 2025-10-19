@@ -10,12 +10,12 @@
 "   * def-m0 through def-m9 (macro definitions with number highlighting)
 " - Added numeric headers with dedicated highlighting:
 "   * mode, staff-lines, initial-style (values highlighted as Number)
-" - Updated NABC glyph modifier highlighting (S, G, M, -, >, ~):
-"   * Changed from SpecialChar to Identifier (matches variable.parameter)
+" - Updated NABC glyph modifier support:
 "   * Added support for 0 suffix (previously only 1-9)
+"   * Maintains SpecialChar highlighting for visual distinction
 " - Updated prepunctis/subpunctis highlighting:
-"   * Changed from Entity to Type (matches entity.name.class)
-"   * Modifiers changed from SpecialChar to Identifier
+"   * Base codes (su/pp) changed to Type (matches entity.name.class)
+"   * Modifiers maintain SpecialChar for consistency with glyph modifiers
 " - Enhanced LaTeX inline command matching in headers
 "
 " This file now mirrors the improvements from vscode-gregorio v1.3.0+
@@ -308,12 +308,12 @@ highlight link nabcNeume Keyword
 " Updated scope to match vscode-gregorio: variable.parameter (function-like modifiers)
 syntax match nabcGlyphModifier /[SGM\->~]/ contained containedin=nabcSnippet
 
-" NABC glyph modifier numeric suffix: 0-9 immediately after modifier (updated to include 0)
+" NABC glyph modifier numeric suffix: 0-9 immediately after modifier
 " Uses positive lookbehind to match digit only after a glyph modifier
 syntax match nabcGlyphModifierNumber /\([SGM\->~]\)\@<=[0-9]/ contained containedin=nabcSnippet
 
-" NABC highlight groups for modifiers (updated to Identifier for variable.parameter equivalence)
-highlight link nabcGlyphModifier Identifier
+" NABC highlight groups for modifiers (reuse GABC modifier styling)
+highlight link nabcGlyphModifier SpecialChar
 highlight link nabcGlyphModifierNumber Number
 
 " NABC PITCH DESCRIPTOR: Elevates or lowers the neume relative to others
@@ -381,7 +381,7 @@ syntax match nabcSubPrepunctisNumber /[1-9]/ contained
 " NABC subpunctis/prepunctis highlight groups
 " Updated to Type (equivalent to entity.name.class in TextMate)
 highlight link nabcSubPrepunctisBase Type
-highlight link nabcSubPrepunctisModifier Identifier
+highlight link nabcSubPrepunctisModifier SpecialChar
 highlight link nabcSubPrepunctisNumber Number
 
 " ============================================================================
