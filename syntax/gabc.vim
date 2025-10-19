@@ -1,7 +1,17 @@
 " Vim syntax file for GABC
 " Maintainer: Gregorio Project Contributors
-" Last Change: 2025-10-18
-" Version: 2.0 (syntax-bootstrap synchronization)
+" Last Change: 2025-10-19
+" Version: 2.1 (pitch+modifier descriptors)
+"
+" CHANGELOG - 2025-10-19 (v2.1):
+" - Added pitch+modifier composite descriptors (similar to NABC su/pp pattern):
+"   * Pitch+oriscus: go, ho1, fO0 (pitch + o/O + optional 0/1 suffix)
+"   * Pitch+special: gr1, fr0, hr8 (pitch + r + digit 0-8)
+"   * Pitch+simple: gw, fv, h< (pitch + single modifier character)
+"   * Highlighting: pitch+modifier=Identifier (unified appearance), suffix=Number
+"   * Both components receive the same highlight for cohesive visual grouping
+" - Deprecated standalone gabcOriscus/gabcOriscusSuffix patterns
+" - Updated gabcFusionCollective to include new composite patterns
 "
 " CHANGELOG - 2025-10-18 (v2.0):
 " - Synchronized with vscode-gregorio feat/syntax-overhaul branch
@@ -535,6 +545,73 @@ syntax match gabcOriscus /[oO]/ contained containedin=gabcSnippet
 " Oriscus suffix: 0 or 1 after o or O
 syntax match gabcOriscusSuffix /\([oO]\)\@<=[01]/ contained containedin=gabcSnippet
 
+" ============================================================================
+" GABC PITCH+MODIFIER DESCRIPTORS: Composite patterns (similar to NABC su/pp)
+" ============================================================================
+" These patterns capture pitch+modifier as a unified element, with separate
+" highlighting for the pitch (base) and the modifier (parameter).
+" This provides better visual distinction and semantic clarity.
+"
+" Pattern structure (similar to nabcSubPrepunctisDescriptor):
+"   1. Complete descriptor pattern (transparent, contains sub-components)
+"   2. Base component (pitch letter)
+"   3. Modifier component (modifier character)
+"   4. Optional suffix component (number, if applicable)
+"
+" Examples:
+"   gw  = pitch 'g' + quilisma modifier
+"   fv  = pitch 'f' + virga (right) modifier
+"   ho  = pitch 'h' + oriscus modifier
+"   gr  = pitch 'g' + punctum cavum modifier
+"   fr1 = pitch 'f' + punctum cavum modifier + variant 1
+
+" Pitch+oriscus descriptors: [a-npA-NP][oO][01]?
+" The pitch letter, oriscus modifier, and optional suffix form a semantic unit
+syntax match gabcPitchOriscusDescriptor /[a-npA-NP][oO][01]\?/ contained containedin=gabcSnippet contains=gabcPitchOriscusBase,gabcPitchOriscusModifier,gabcPitchOriscusSuffix transparent
+
+" Components of pitch+oriscus descriptor
+syntax match gabcPitchOriscusBase /[a-npA-NP]/ contained
+syntax match gabcPitchOriscusModifier /[oO]/ contained
+syntax match gabcPitchOriscusSuffix /\([oO]\)\@<=[01]/ contained
+
+" Pitch+special modifier descriptors: [a-npA-NP]r[0-8]
+" Pitch letter + r + digit (r0-r8 variants)
+syntax match gabcPitchModifierSpecial /[a-npA-NP]r[0-8]/ contained containedin=gabcSnippet contains=gabcPitchModifierSpecialBase,gabcPitchModifierSpecialChar,gabcPitchModifierSpecialNumber transparent
+
+" Components of pitch+special modifier descriptor
+syntax match gabcPitchModifierSpecialBase /[a-npA-NP]/ contained
+syntax match gabcPitchModifierSpecialChar /r/ contained
+syntax match gabcPitchModifierSpecialNumber /\(r\)\@<=[0-8]/ contained
+
+" Pitch+simple modifier descriptors: [a-npA-NP][qwWvVs~<>=rR.]
+" Most common pattern: pitch letter + single modifier character
+" NOTE: This MUST be defined AFTER pitch+oriscus and pitch+special to avoid conflicts
+syntax match gabcPitchModifierSimple /[a-npA-NP][qwWvVs~<>=rR.]/ contained containedin=gabcSnippet contains=gabcPitchModifierSimpleBase,gabcPitchModifierSimpleChar transparent
+
+" Components of pitch+simple modifier descriptor
+syntax match gabcPitchModifierSimpleBase /[a-npA-NP]/ contained
+syntax match gabcPitchModifierSimpleChar /[qwWvVs~<>=rR.]/ contained
+
+" Highlight links for pitch+modifier descriptors
+" Pitch and modifier receive the same highlight (Identifier) for unified appearance
+highlight link gabcPitchOriscusBase Identifier
+highlight link gabcPitchOriscusModifier Identifier
+highlight link gabcPitchOriscusSuffix Number
+
+highlight link gabcPitchModifierSpecialBase Identifier
+highlight link gabcPitchModifierSpecialChar Identifier
+highlight link gabcPitchModifierSpecialNumber Number
+
+highlight link gabcPitchModifierSimpleBase Identifier
+highlight link gabcPitchModifierSimpleChar Identifier
+
+" ============================================================================
+" GABC SIMPLE MODIFIERS: Standalone modifier characters (fallback patterns)
+" ============================================================================
+" These patterns match modifiers that appear WITHOUT a preceding pitch letter.
+" They serve as fallback for cases where modifiers are used independently.
+" The pitch+modifier patterns above take precedence when both pitch and modifier are present.
+
 " Simple single-character modifiers (after pitch)
 " q: quadratum, w: quilisma, W: quilisma quadratum
 " v: virga (stem right), V: virga (stem left)
@@ -542,7 +619,7 @@ syntax match gabcOriscusSuffix /\([oO]\)\@<=[01]/ contained containedin=gabcSnip
 " <: augmented liquescent, >: diminished liquescent
 " =: linea, r: punctum cavum, R: punctum quadratum surrounded by lines
 " .: punctum mora vocis (rhythmic dot)
-" NOTE: These are defined BEFORE compound modifiers so compounds take precedence
+" NOTE: These are defined AFTER pitch+modifier patterns as fallback
 syntax match gabcModifierSimple /[qwWvVs~<>=rR.]/ contained containedin=gabcSnippet
 
 " Special modifiers with numbers (r followed by digit)
@@ -634,7 +711,7 @@ syntax match gabcLineBreakSuffix /\(z\)\@<=0/ contained containedin=gabcSnippet
 
 " Collective fusion: @[...] function-style fusion
 " The @ symbol acts as a function, and the bracketed pitches are the argument
-syntax region gabcFusionCollective matchgroup=gabcFusionFunction start=/@\[/ end=/\]/ keepend oneline contained containedin=gabcSnippet contains=gabcPitch,gabcAccidental,gabcModifierSimple,gabcModifierCompound,gabcModifierSpecial,gabcInitioDebilis,gabcOriscus,gabcOriscusSuffix,gabcPitchSuffix transparent
+syntax region gabcFusionCollective matchgroup=gabcFusionFunction start=/@\[/ end=/\]/ keepend oneline contained containedin=gabcSnippet contains=gabcPitch,gabcAccidental,gabcPitchOriscusDescriptor,gabcPitchModifierSpecial,gabcPitchModifierSimple,gabcModifierSimple,gabcModifierCompound,gabcModifierSpecial,gabcInitioDebilis,gabcPitchSuffix transparent
 
 " Individual pitch fusion connector: @ between pitches (not before bracket)
 " Uses negative lookahead to avoid matching @[ (which is collective fusion)
@@ -883,8 +960,8 @@ highlight link gabcPitchSuffix Number
 
 " GABC pitch modifiers: symbols that modify the appearance/meaning of pitches
 highlight link gabcInitioDebilis Identifier
-highlight link gabcOriscus Identifier
-highlight link gabcOriscusSuffix Number
+" highlight link gabcOriscus Identifier  " DEPRECATED: Now using gabcPitchOriscusModifier
+" highlight link gabcOriscusSuffix Number  " DEPRECATED: Now using gabcPitchOriscusSuffix
 highlight link gabcModifierSimple Identifier
 highlight link gabcModifierCompound Identifier
 highlight link gabcModifierSpecial Identifier

@@ -1,0 +1,141 @@
+name: Teste de Pitch+Modifier Descriptors;
+annotation: Validação de padrões compostos;
+%%
+% ========================================================================
+% TESTE DE PITCH+MODIFIER DESCRIPTORS
+% ========================================================================
+%
+% Este arquivo testa os novos padrões compostos pitch+modifier que capturam
+% a letra de pitch junto com o modificador, similar ao padrão usado para
+% su/pp em snippets NABC.
+%
+% Highlighting esperado:
+% - Pitch (base): Type (verde em temas dark, verde escuro em light)
+% - Modifier: SpecialChar (vermelho/magenta)
+% - Number (suffix): Number (verde brilhante)
+% ========================================================================
+
+%%
+
+% ========================================================================
+% SEÇÃO 1: PITCH + ORISCUS (o, O)
+% ========================================================================
+
+% Oriscus simples
+(c4) Te(g)sto(go) o(ho)ris(io)cus.(jo) (::)
+
+% Oriscus com suffixos 0 e 1
+(c4) Va(fo0)ri(go1)an(ho0)tes.(io1) (::)
+
+% Oriscus maiúsculo (scapus)
+(c4) Sca(gO)pus(fO) o(hO0)ris(iO1)cus.(jO) (::)
+
+% Mistura com outras notas
+(c4) Ký(d)ri(eo)e(f) e(go)lé(a)i(bo)son.(c) (::)
+
+% ========================================================================
+% SEÇÃO 2: PITCH + QUILISMA (w, W)
+% ========================================================================
+
+% Quilisma simples
+(c4) Qui(gw)lis(fw)ma(hw) tes(iw)te.(jw) (::)
+
+% Quilisma quadratum
+(c4) Qua(gW)dra(fW)tum(hW) tes(iW)te.(jW) (::)
+
+% Mistura
+(c4) E(d)ven(ew)tus(f) Dó(gw)mi(a)ni.(g) (::)
+
+% ========================================================================
+% SEÇÃO 3: PITCH + VIRGA (v, V)
+% ========================================================================
+
+% Virga direita (v)
+(c4) Vir(gv)ga(fv) di(hv)rei(iv)ta.(jv) (::)
+
+% Virga esquerda (V)
+(c4) Vir(gV)ga(fV) es(hV)quer(iV)da.(jV) (::)
+
+% Bivirga e trivirga (compostos)
+(c4) Bi(gvv)vir(fvv)ga.(hvv) (::)
+(c4) Tri(gvvv)vir(fvvv)ga.(hvvv) (::)
+
+% ========================================================================
+% SEÇÃO 4: PITCH + PUNCTUM CAVUM (r, R)
+% ========================================================================
+
+% Punctum cavum simples
+(c4) Ca(gr)vum(fr) sim(hr)ples.(ir) (::)
+
+% Punctum cavum com linhas
+(c4) Com(gR) li(fR)nhas.(hR) (::)
+
+% ========================================================================
+% SEÇÃO 5: PITCH + SPECIAL MODIFIERS (r0-r8)
+% ========================================================================
+
+% Variantes r0 a r8
+(c4) Va(gr0)ri(fr1)an(hr2)tes(ir3) (::)
+(c4) Es(gr4)pe(fr5)ci(hr6)ais.(ir7) (::)
+(c4) Fi(gr8)nal.(fr8) (::)
+
+% ========================================================================
+% SEÇÃO 6: PITCH + STROPHA (s)
+% ========================================================================
+
+% Stropha simples
+(c4) Stro(gs)pha(fs) sim(hs)ples.(is) (::)
+
+% Distropha e tristropha (compostos)
+(c4) Dis(gss)tro(fss)pha.(hss) (::)
+(c4) Tris(gsss)tro(fsss)pha.(hsss) (::)
+
+% ========================================================================
+% SEÇÃO 7: PITCH + OUTROS MODIFIERS SIMPLES
+% ========================================================================
+
+% Quadratum
+(c4) Qua(gq)dra(fq)tum.(hq) (::)
+
+% Liquescents
+(c4) Li(g<)ques(f<)cent(h<) aug(i<)men(j<)tado.(k<) (::)
+(c4) Li(g>)ques(f>)cent(h>) di(i>)mi(j>)nu(k>)to.(l>) (::)
+(c4) De(g~)mi(f~)nu(h~)tus.(i~) (::)
+
+% Linea
+(c4) Li(g=)ne(f=)a.(h=) (::)
+
+% Punctum mora vocis
+(c4) Mo(g.)ra(f.) vo(h.)cis.(i.) (::)
+
+% ========================================================================
+% SEÇÃO 8: PITCH INCLINATUM + MODIFIERS
+% ========================================================================
+
+% Inclinatum (uppercase) com modifiers
+(c4) In(Gv)cli(Fw)na(Hv)tum.(Iv) (::)
+
+% Inclinatum com suffixos de direção
+(c4) Di(G0v)re(F1v)ção.(H2v) (::)
+
+% ========================================================================
+% SEÇÃO 9: FUSION COLLECTIVE COM PITCH+MODIFIER
+% ========================================================================
+
+% Fusion collective com múltiplos pitch+modifiers
+(c4) Fu(g)são:(@[gwfvho]) (::)
+(c4) Com(@[gvfwhr]) pos(@[iojvkw])ta.(l) (::)
+
+% ========================================================================
+% SEÇÃO 10: CASOS MISTOS
+% ========================================================================
+
+% Mistura de todos os padrões
+(c4) Ký(d)ri(eo)e(f) e(gw)lé(a)i(bv)son.(c) (::)
+(c4) Chri(d)ste(fr)e(gw)lé(ho)i(av)son.(g) (::)
+(c4) Ký(gr1)ri(fw)e(ho0) e(iv)lé(j<)i(k~)son.(l) (::)
+
+% Padrão completo do Kyrie XVII
+(c4) KY(f)ri(gfg)e(h.) *() e(ixjvIH'ivHG'hvGF'gwhf)lé(hg)i(gh)son.(h.) <i>bis</i>(::)
+
+%%
