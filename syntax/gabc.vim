@@ -1,4 +1,24 @@
-" Vim syntax file for GABC (fresh minimal)
+" Vim syntax file for GABC
+" Maintainer: Gregorio Project Contributors
+" Last Change: 2025-10-18
+" Version: 2.0 (syntax-bootstrap synchronization)
+"
+" CHANGELOG - 2025-10-18 (v2.0):
+" - Synchronized with vscode-gregorio feat/syntax-overhaul branch
+" - Added LaTeX support for expanded header list:
+"   * mode-differentia, mode-modifier
+"   * def-m0 through def-m9 (macro definitions with number highlighting)
+" - Added numeric headers with dedicated highlighting:
+"   * mode, staff-lines, initial-style (values highlighted as Number)
+" - Updated NABC glyph modifier highlighting (S, G, M, -, >, ~):
+"   * Changed from SpecialChar to Identifier (matches variable.parameter)
+"   * Added support for 0 suffix (previously only 1-9)
+" - Updated prepunctis/subpunctis highlighting:
+"   * Changed from Entity to Type (matches entity.name.class)
+"   * Modifiers changed from SpecialChar to Identifier
+" - Enhanced LaTeX inline command matching in headers
+"
+" This file now mirrors the improvements from vscode-gregorio v1.3.0+
 
 " Guard: allow re-sourcing during dev if needed
 if exists('b:current_syntax') && !exists('g:gabc_devmode')
@@ -52,19 +72,48 @@ syntax match gabcHeaderField /^\s*[^%:][^:]*\ze:/ containedin=gabcHeaders nextgr
 syntax match gabcNabcLinesHeader /^\s*nabc-lines\s*:\s*\([0-9]\+\)/ containedin=gabcHeaders contains=gabcNabcLinesField,gabcNabcLinesValue
 syntax match gabcNabcLinesField /nabc-lines/ contained
 syntax match gabcNabcLinesValue /[0-9]\+/ contained
-syntax match gabcHeaderColon /:/ contained containedin=gabcHeaders nextgroup=gabcHeaderValue skipwhite
-" Header values with potential LaTeX content
-" Special headers that support LaTeX commands within <v> tags
-syntax region gabcHeaderValueLatex start=/\%(name\s*:\s*\)\@<=[^;]*<v>/ end=+</v>[^;]*+ contained containedin=gabcHeaders nextgroup=gabcHeaderSemicolon contains=gabcHeaderLatexTag
-syntax region gabcHeaderValueLatex start=/\%(annotation\s*:\s*\)\@<=[^;]*<v>/ end=+</v>[^;]*+ contained containedin=gabcHeaders nextgroup=gabcHeaderSemicolon contains=gabcHeaderLatexTag
-syntax region gabcHeaderValueLatex start=/\%(commentary\s*:\s*\)\@<=[^;]*<v>/ end=+</v>[^;]*+ contained containedin=gabcHeaders nextgroup=gabcHeaderSemicolon contains=gabcHeaderLatexTag
+
+" NUMERIC HEADERS: Headers with integer values
+" mode: Gregorian mode (1-8 typical)
+" staff-lines: Number of staff lines (2-5)
+" initial-style: Initial letter style (0, 1, 2, etc.)
+syntax match gabcModeHeader /^\s*mode\s*:\s*\([0-9]\+\)\s*;/ containedin=gabcHeaders contains=gabcModeField,gabcHeaderColon,gabcModeValue,gabcHeaderSemicolon
+syntax match gabcModeField /mode/ contained
+syntax match gabcModeValue /\(:\s*\)\@<=[0-9]\+/ contained
+syntax match gabcStaffLinesHeader /^\s*staff-lines\s*:\s*\([0-9]\+\)\s*;/ containedin=gabcHeaders contains=gabcStaffLinesField,gabcHeaderColon,gabcStaffLinesValue,gabcHeaderSemicolon
+syntax match gabcStaffLinesField /staff-lines/ contained
+syntax match gabcStaffLinesValue /\(:\s*\)\@<=[0-9]\+/ contained
+syntax match gabcInitialStyleHeader /^\s*initial-style\s*:\s*\([0-9]\+\)\s*;/ containedin=gabcHeaders contains=gabcInitialStyleField,gabcHeaderColon,gabcInitialStyleValue,gabcHeaderSemicolon
+syntax match gabcInitialStyleField /initial-style/ contained
+syntax match gabcInitialStyleValue /\(:\s*\)\@<=[0-9]\+/ contained
+
+" DEF-M# HEADERS: Macro definition headers (def-m0 through def-m9) with LaTeX support
+" Special handling to highlight the number separately
+syntax match gabcDefMacroHeader /^\s*def-m[0-9]\s*:/ containedin=gabcHeaders contains=gabcDefMacroField,gabcDefMacroNumber,gabcHeaderColon nextgroup=gabcHeaderValueLatexFull skipwhite
+syntax match gabcDefMacroField /def-m/ contained
+syntax match gabcDefMacroNumber /\(def-m\)\@<=[0-9]/ contained
+
+" LATEX-ENABLED HEADERS: Headers that support LaTeX commands
+" Expanded list: name, annotation, commentary, office-part, transcriber, user-notes, bibliography, mode-differentia, mode-modifier
+syntax match gabcHeaderLatexEnabled /^\s*\(name\|annotation\|commentary\|office-part\|transcriber\|user-notes\|bibliography\|mode-differentia\|mode-modifier\)\s*:/ containedin=gabcHeaders contains=gabcHeaderLatexField,gabcHeaderColon nextgroup=gabcHeaderValueLatexFull skipwhite
+syntax match gabcHeaderLatexField /\(name\|annotation\|commentary\|office-part\|transcriber\|user-notes\|bibliography\|mode-differentia\|mode-modifier\)/ contained
+
+" LATEX HEADER VALUE REGION: Full value including inline LaTeX and <v> tags
+" This region spans from after the colon to the semicolon, allowing LaTeX syntax
+syntax region gabcHeaderValueLatexFull start=/\%(:\s*\)\@<=/ end=/\(;\)\@=/ contained containedin=gabcHeaders contains=gabcHeaderLatexTag,@texSyntax,gabcHeaderLatexInline nextgroup=gabcHeaderSemicolon oneline
+
+" LaTeX inline commands in header values: \command{...}
+syntax match gabcHeaderLatexInline /\\[a-zA-Z@]\+\(\[[^\]]*\]\)\?\({[^}]*}\)*/ contained contains=@texSyntax
 
 " LaTeX verbatim tag within header values
 syntax region gabcHeaderLatexTag matchgroup=gabcHeaderLatexDelim start=+<v>+ end=+</v>+ contained contains=@texSyntax oneline
 
+" STANDARD HEADER COLON AND SEMICOLON
+syntax match gabcHeaderColon /:/ contained containedin=gabcHeaders
+syntax match gabcHeaderSemicolon /;/ contained containedin=gabcHeaders
+
 " Standard header values (fallback for headers without LaTeX)
 syntax match gabcHeaderValue /\%(:\s*\)\@<=[^;]*/ contained containedin=gabcHeaders nextgroup=gabcHeaderSemicolon
-syntax match gabcHeaderSemicolon /;/ contained containedin=gabcHeaders
 
 " Header highlight links (use default to avoid overriding colorschemes)
 highlight default link gabcHeaderField Keyword
@@ -72,6 +121,22 @@ highlight default link gabcHeaderLatexDelim Delimiter
 highlight default link gabcHeaderColon Operator
 highlight default link gabcHeaderValue String
 highlight default link gabcHeaderSemicolon Delimiter
+
+" Numeric header highlights
+highlight default link gabcModeField Keyword
+highlight default link gabcModeValue Number
+highlight default link gabcStaffLinesField Keyword
+highlight default link gabcStaffLinesValue Number
+highlight default link gabcInitialStyleField Keyword
+highlight default link gabcInitialStyleValue Number
+
+" Def-m# macro header highlights
+highlight default link gabcDefMacroField Keyword
+highlight default link gabcDefMacroNumber Number
+
+" LaTeX-enabled header highlights
+highlight default link gabcHeaderLatexField Keyword
+highlight default link gabcHeaderLatexInline Special
 
 " Clefs inside notes region: c1..c4 | cb1..cb4 | f1..f4 with optional @ connectors
 " Restrict to whole parenthesized group so we don't match inside other note clusters
@@ -140,6 +205,21 @@ syntax match nabcError /[$%&\\]\+/ contained containedin=nabcSnippet
 " BASIC GLYPH DESCRIPTOR: neume + optional(glyph_modifier) + optional(pitch_descriptor)
 " This is the fundamental unit of NABC notation, representing a single neume
 " with its modifiers and pitch information.
+" 
+" Official codes from Gregorio documentation (NABC_COMPREHENSIVE_ANALYSIS.md):
+" 
+" St. Gall Family (31 codes):
+"   vi=virga, pu=punctum, ta=tractulus, gr=gravis, cl=clivis, pe=pes, 
+"   po=porrectus, to=torculus, ci=climacus, sc=scandicus, 
+"   pf=porrectus flexus, sf=scandicus flexus, tr=torculus resupinus,
+"   st=stropha, ds=distropha, ts=tristropha, tg=trigonus,
+"   bv=bivirga, tv=trivirga, pr=pressus maior, pi=pressus minor,
+"   vs=virga strata, or=oriscus, sa=salicus, pq=pes quassus,
+"   ql=quilisma (3 loops), qi=quilisma (2 loops), pt=pes stratus, ni=nihil
+"
+" Laon Family (29 codes - adds un, oc; removes st, qi, gr):
+"   un=uncinus, oc=oriscus-clivis
+"
 " Examples:
 "   vi       - simple neume (virga)
 "   viS      - neume with modifier
@@ -148,10 +228,10 @@ syntax match nabcError /[$%&\\]\+/ contained containedin=nabcSnippet
 "
 " Pattern: Match complete sequence as a region
 " Region boundaries:
-"   start: neume code (2 letters)
+"   start: neume code (2 letters from official list)
 "   end: lookahead for non-modifier/non-pitch character or end of snippet
 syntax match nabcBasicGlyphDescriptor 
-  \ /\(vi\|pu\|ta\|gr\|cl\|pe\|po\|to\|ci\|sc\|pf\|sf\|tr\|st\|ds\|ts\|tg\|bv\|tv\|pq\|pr\|pi\|vs\|or\|sa\|ql\|qi\|pt\|ni\|oc\|un\)\([SGM\->~][1-9]\?\)\?\(h[a-np]\)\?/
+  \ /\<\%(vi\|pu\|ta\|gr\|cl\|pe\|po\|to\|ci\|sc\|pf\|sf\|tr\|st\|ds\|ts\|tg\|bv\|tv\|pq\|pr\|pi\|vs\|or\|sa\|ql\|qi\|pt\|ni\|oc\|un\)\%([SGM\->~][1-9]\?\)\?\%(h[a-np]\)\?\>/
   \ contained containedin=nabcSnippet
   \ contains=nabcNeume,nabcGlyphModifier,nabcGlyphModifierNumber,nabcPitchDescriptorH,nabcPitchDescriptorPitch
   \ transparent
@@ -167,27 +247,48 @@ highlight link nabcComplexGlyphDelimiter Delimiter
 " ============================================================================
 " NABC NEUMES: St. Gall and Laon neume codes
 " ============================================================================
-" Unified list from St. Gall and Laon codifications
+" Official codes from Gregorio documentation - RESTRICTED TO SPECIFICATION
 " These are keyword-like identifiers for specific neume shapes in early notation
-
-" NABC neume codes (2-letter codes)
-" Common to both St. Gall and Laon:
-" vi=virga, pu=punctum, ta=tractulus, gr=gravis, cl=clivis, pe=pes, po=porrectus
-" to=torculus, ci=climacus, sc=scandicus, pf=porrectus flexus, sf=scandicus flexus
-" tr=torculus resupinus, or=oriscus, ds=distropha, ts=tristropha, tg=trigonus
-" bv=bivirga, tv=trivirga, pr=pressus maior, pi=pressus minor, vs=virga strata
-" sa=salicus, pq=pes quassus, ql=quilisma, pt=pes stratus, ni=nihil (placeholder)
 "
-" St. Gall specific:
-" st=stropha
+" St. Gall Family (31 codes - gregall/gresgmodern fonts):
+"   vi=virga (single vertical stroke)
+"   pu=punctum (single dot)
+"   ta=tractulus (small horizontal stroke)
+"   gr=gravis (descending stroke)
+"   cl=clivis (two-note descending)
+"   pe=pes (two-note ascending)
+"   po=porrectus (three-note low-high-low)
+"   to=torculus (three-note high-low-high)
+"   ci=climacus (descending series)
+"   sc=scandicus (ascending series)
+"   pf=porrectus flexus (porrectus + descending)
+"   sf=scandicus flexus (scandicus + descending)
+"   tr=torculus resupinus (torculus + ascending)
+"   st=stropha (single stropha)
+"   ds=distropha (double stropha)
+"   ts=tristropha (triple stropha)
+"   tg=trigonus (triangle shape)
+"   bv=bivirga (two virgae)
+"   tv=trivirga (three virgae)
+"   pr=pressus maior (large pressus)
+"   pi=pressus minor (small pressus)
+"   vs=virga strata (horizontal virga)
+"   or=oriscus (wavy note)
+"   sa=salicus (oriscus + ascending)
+"   pq=pes quassus (oriscus pes)
+"   ql=quilisma (3 loops - wavy ascending)
+"   qi=quilisma (2 loops - wavy ascending)
+"   pt=pes stratus (horizontal pes)
+"   ni=nihil (empty placeholder)
 "
-" Laon specific:
-" oc=oriscus-clivis, un=uncinus
+" Laon Family (29 codes - grelaon font):
+"   Same as St. Gall EXCEPT:
+"   - ADDS: un=uncinus, oc=oriscus-clivis
+"   - REMOVES: st=stropha, qi=quilisma (2 loops), gr=gravis
 "
-" Pattern: 2-letter codes, case-sensitive
-" Must use simple pattern without word boundaries since NABC codes can be
-" followed by modifiers (-, ~, ', etc.) without spaces
-syntax match nabcNeume /\(vi\|pu\|ta\|gr\|cl\|pe\|po\|to\|ci\|sc\|pf\|sf\|tr\|st\|ds\|ts\|tg\|bv\|tv\|pq\|pr\|pi\|vs\|or\|sa\|ql\|qi\|pt\|ni\|oc\|un\)/ contained containedin=nabcSnippet
+" Pattern: Use word boundaries to ensure exact 2-letter matches
+" Must be case-sensitive and exact matches only
+syntax match nabcNeume /\<\%(vi\|pu\|ta\|gr\|cl\|pe\|po\|to\|ci\|sc\|pf\|sf\|tr\|st\|ds\|ts\|tg\|bv\|tv\|pq\|pr\|pi\|vs\|or\|sa\|ql\|qi\|pt\|ni\|oc\|un\)\>/ contained containedin=nabcSnippet
 
 " NABC neume highlight group
 highlight link nabcNeume Keyword
@@ -196,23 +297,23 @@ highlight link nabcNeume Keyword
 " These modifiers follow immediately after the neume code
 " All can optionally take a numeric suffix 1-9
 "
-" S = modification of the mark
-" G = modification of the grouping (neumatic break)
-" M = melodic modification
-" - = addition of episema
-" > = augmentive liquescence
-" ~ = diminutive liquescence
+" S = Significative Letter (important letter in manuscript)
+" G = Glyph Variant (alternative neume form)
+" M = Modifier (generic modification)
+" - = Hyphen (connection/hyphen)
+" > = Direction/Emphasis (direction or emphasis)
+" ~ = Ornament (vibration or ornament)
 "
 " Pattern: modifier character (simple match within nabcSnippet)
-" Note: Uses same highlighting as GABC modifiers for consistency
+" Updated scope to match vscode-gregorio: variable.parameter (function-like modifiers)
 syntax match nabcGlyphModifier /[SGM\->~]/ contained containedin=nabcSnippet
 
-" NABC glyph modifier numeric suffix: 1-9 immediately after modifier
+" NABC glyph modifier numeric suffix: 0-9 immediately after modifier (updated to include 0)
 " Uses positive lookbehind to match digit only after a glyph modifier
-syntax match nabcGlyphModifierNumber /\([SGM\->~]\)\@<=[1-9]/ contained containedin=nabcSnippet
+syntax match nabcGlyphModifierNumber /\([SGM\->~]\)\@<=[0-9]/ contained containedin=nabcSnippet
 
-" NABC highlight groups for modifiers (reuse GABC modifier styling)
-highlight link nabcGlyphModifier SpecialChar
+" NABC highlight groups for modifiers (updated to Identifier for variable.parameter equivalence)
+highlight link nabcGlyphModifier Identifier
 highlight link nabcGlyphModifierNumber Number
 
 " NABC PITCH DESCRIPTOR: Elevates or lowers the neume relative to others
@@ -278,8 +379,9 @@ syntax match nabcSubPrepunctisModifier /[tuvwxynqz]/ contained
 syntax match nabcSubPrepunctisNumber /[1-9]/ contained
 
 " NABC subpunctis/prepunctis highlight groups
-highlight link nabcSubPrepunctisBase Entity
-highlight link nabcSubPrepunctisModifier SpecialChar
+" Updated to Type (equivalent to entity.name.class in TextMate)
+highlight link nabcSubPrepunctisBase Type
+highlight link nabcSubPrepunctisModifier Identifier
 highlight link nabcSubPrepunctisNumber Number
 
 " ============================================================================

@@ -1,0 +1,104 @@
+% =============================================================================
+% TESTE DE ATUALIZAÇÃO DE SINTAXE - gregorio.nvim v2.0
+% =============================================================================
+% Este arquivo testa as melhorias sincronizadas com vscode-gregorio
+%
+% Data: 2025-10-18
+% Versão: 2.0 (syntax-bootstrap synchronization)
+% =============================================================================
+
+% =============================================================================
+% SEÇÃO 1: NOVOS HEADERS COM LATEX
+% =============================================================================
+
+% Headers LaTeX existentes (devem continuar funcionando)
+name: Kyrie \textbf{XVII};
+annotation: Modo \textsc{viii};
+commentary: Missa \textit{De Angelis};
+office-part: <v>\LaTeX\ inline</v>;
+transcriber: João \underline{Silva};
+user-notes: Fonte: \emph{Graduale Romanum};
+bibliography: \cite{GradualeRomanum1961};
+
+% NOVOS headers LaTeX (implementação v2.0)
+mode-differentia: Diferença \textbf{modal};
+mode-modifier: Modificador \textit{especial};
+
+% =============================================================================
+% SEÇÃO 2: DEF-M# HEADERS (MACROS COM NÚMERO DESTACADO)
+% =============================================================================
+
+% Macros def-m0 até def-m9 com LaTeX
+def-m0: Macro zero \textbf{bold};
+def-m1: Macro um com <v>\textit{verbatim}</v>;
+def-m2: \emph{Macro dois} inline;
+def-m3: Macro três \textsc{small caps};
+def-m4: Macro quatro normal;
+def-m5: Macro cinco \underline{sublinhado};
+def-m6: Macro seis com \textcolor{red}{cor};
+def-m7: Macro sete especial;
+def-m8: Macro oito \textbf{\textit{aninhado}};
+def-m9: Macro nove final;
+
+% =============================================================================
+% SEÇÃO 3: HEADERS NUMÉRICOS (VALORES DESTACADOS)
+% =============================================================================
+
+% Headers com valores numéricos (números devem ser destacados)
+mode: 6;
+staff-lines: 4;
+initial-style: 1;
+nabc-lines: 2;
+
+%%
+
+% =============================================================================
+% SEÇÃO 4: NABC GLYPH MODIFIERS (ATUALIZADO: AGORA COM 0)
+% =============================================================================
+
+% Todos os 6 modificadores básicos
+(c4) To(d|viS viG viM vi- vi> vi~)dos(e|pu)modifiers.(f|ta) (::)
+
+% Modificadores com variantes numéricas 0-9 (0 é novo!)
+(c4) Ký(d|viS0)ri(e|viS1)e(f|viS2) e(g|viS3)lé(h|viS4)i(g|viS5)son.(f|viS6) (::)
+(c4) Va(d|viS7)ri(e|viS8)an(f|viS9)tes.(g|vi) (::)
+
+% Múltiplos modificadores
+(c4) Com(d|viS puG taM)plexo(e|gr- cl> pe~)texto.(f|vi) (::)
+
+% =============================================================================
+% SEÇÃO 5: PREPUNCTIS/SUBPUNCTIS (ATUALIZADO: HIGHLIGHT TIPO)
+% =============================================================================
+
+% Subpunctis simples
+(c4) Sub(d|su1)punc(e|su2)tis(f|su3) sim(g|su4)ples.(h|su5) (::)
+
+% Subpunctis com modifiers
+(c4) Mo(d|sut1)di(e|suu2)fiers(f|suv3) sub(g|suw4)punc(h|sux5)tis.(i|suy6) (::)
+
+% Prepunctis simples
+(c4) Pre(d|pp1)punc(e|pp2)tis(f|pp3) sim(g|pp4)ples.(h|pp5) (::)
+
+% Prepunctis com modifiers
+(c4) Mo(d|ppt1)di(e|ppu2)fiers(f|ppv3) pre(g|ppw4)punc(h|ppx5)tis.(i|ppy6) (::)
+
+% Mistura de ambos
+(c4) Mix(d|su1pp1)tu(e|sut2ppt2)ra(f|suu3ppu3)completa.(g|vi) (::)
+
+% =============================================================================
+% SEÇÃO 6: VALIDAÇÃO DE RETROCOMPATIBILIDADE
+% =============================================================================
+
+% Notação GABC padrão (deve continuar funcionando)
+(c4) Ký(f)ri(g)e(h) e(i)lé(j)i(h)son.(g) (::)
+Chri(f)ste(g) e(a)lé(g)i(f)son.(e) (::)
+Ký(g)ri(h)e(i) e(h)lé(g)i(f)son.(e) (::)
+
+% Notação NABC padrão (deve continuar funcionando)
+(c4) Na(f|viha)bc(g|puha) no(h|ta)ta(i|gr)ção.(j|cl) (::)
+
+%%
+
+% =============================================================================
+% FIM DO TESTE
+% =============================================================================
