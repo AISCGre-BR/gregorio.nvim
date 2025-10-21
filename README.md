@@ -241,9 +241,31 @@ require('lualine').setup({
 
 ## Snippets
 
-The plugin includes various snippets to accelerate GABC code writing:
+The plugin includes 30+ snippets to accelerate GABC code writing. Snippets are compatible with multiple snippet engines:
 
-### Responses and Verses
+- **UltiSnips** - Classic vim snippet engine
+- **vim-snippets** - Snippet collection manager  
+- **LuaSnip** - Modern Lua-based snippet engine (⭐ recommended for Neovim)
+
+### LuaSnip Integration (Recommended)
+
+**Quick Start**: [5-minute setup guide](docs/LUASNIP_QUICKSTART.md) ⚡
+
+**Complete Guide**: [LuaSnip Integration Documentation](docs/LUASNIP_INTEGRATION.md) 📖
+
+**One-line setup**:
+```lua
+require('luasnip.loaders.from_snipmate').lazy_load()
+```
+
+Or use native LuaSnip format with advanced features:
+```lua
+require('gabc.luasnip').setup()
+```
+
+### Available Snippets
+
+#### Responses and Verses
 
 - `a/.` → `<sp>A/</sp>.` (Antiphon response)
 - `r/.` → `<sp>R/</sp>.` (Responsory response)  
@@ -386,9 +408,28 @@ vim.api.nvim_create_autocmd('FileType', {
 
 ## Integration with other tools
 
-### With LuaSnip
+### With LuaSnip (Recommended)
 
-The plugin is compatible with LuaSnip. Make sure you have LuaSnip installed and configured.
+LuaSnip is the recommended snippet engine for Neovim. The plugin's snippets are fully compatible and can be loaded automatically.
+
+**Complete setup guide**: [LuaSnip Integration Guide](docs/LUASNIP_INTEGRATION.md)
+
+**Quick configuration**:
+```lua
+-- Load all snippets including gregorio.nvim
+require('luasnip.loaders.from_snipmate').lazy_load()
+
+-- Keymaps
+vim.keymap.set({'i', 's'}, '<C-k>', function()
+  if require('luasnip').expand_or_jumpable() then
+    require('luasnip').expand_or_jump()
+  end
+end, { silent = true })
+```
+
+### With UltiSnips
+
+The plugin is compatible with UltiSnips. Snippets will be automatically discovered from the `snippets/` directory.
 
 ### With telescope.nvim
 
