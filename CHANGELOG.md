@@ -35,6 +35,11 @@ All notable changes to this project will be documented in this file.
     Tironian letters, horizontal spacing adjustment.
   - Error highlighting for invalid characters in GABC/NABC snippets.
   - Embedded LaTeX syntax (`@texSyntax`) inside `<v>` verbatim tags.
+- Improved `README.md` documentation based on the current `gregorio.nvim-old`
+  ported behavior:
+  - Documented detailed command scope and range behavior in chant body (`%%` separator).
+  - Expanded fallback highlighting coverage notes for GABC/NABC support.
+  - Expanded snippets/templates documentation with practical resource categories.
 
 ## [0.1.0] - 2026-05-18
 

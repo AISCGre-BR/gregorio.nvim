@@ -14,7 +14,7 @@ It integrates:
 - Tree-sitter language registration for `gregorio`
 - Static syntax highlighting fallback (`syntax/gabc.vim`)
 - Automatic LSP startup with `gregorio-lsp` for `gabc` buffers
-- Editing commands:
+- Editing commands (ported from `gregorio.nvim-old` and adapted to current architecture):
   - `:GabcTransposeUp`
   - `:GabcTransposeDown`
   - `:GabcFillParens`
@@ -81,11 +81,18 @@ require("gregorio").setup({
 
 | Command | Description |
 |---|---|
-| `:GabcTransposeUp` | Transpose notes in notation groups upward |
-| `:GabcTransposeDown` | Transpose notes in notation groups downward |
-| `:GabcFillParens` | Replace empty groups like `()` with `(f)` |
+| `:GabcTransposeUp` | Transpose notes in notation groups upward (supports ranges) |
+| `:GabcTransposeDown` | Transpose notes in notation groups downward (supports ranges) |
+| `:GabcFillParens` | Replace empty groups like `()` with `(f)` (supports ranges) |
 | `:GabcConvertLigaturesToTags` | Convert `æ`, `ǽ`, `œ` to `<sp>` tags in chant body |
 | `:GabcConvertTagsToLigatures` | Convert `<sp>` ligature tags back to Unicode ligatures |
+
+### Command behavior details
+
+- Range-aware commands (`GabcTransposeUp`, `GabcTransposeDown`, `GabcFillParens`) only modify the chant body section, i.e. lines after the `%%` header/body separator.
+- `GabcTransposeUp` and `GabcTransposeDown` only transpose note letters inside note groups `(...)`; bracketed fragments `[...]` inside groups are preserved.
+- `GabcFillParens` turns empty or whitespace-only groups (`()`, `(   )`) into `(f)`.
+- Ligature conversion commands operate on the whole chant body and keep headers untouched.
 
 ## Snippets and templates
 
@@ -97,10 +104,25 @@ This repository also provides reusable resources imported from `gregorio.nvim-ol
   - `templates/nabc_gabc_template.gabc`
   - `templates/advanced_gabc_template.gabc`
 
+The snippet pack includes:
+
+- liturgical response shortcuts (`A/`, `R/`, `V/`)
+- common lyric formatting tags (`<b>`, `<i>`, `<sc>`, `<ul>`, `<tt>`)
+- control tags (`<clear>`, `<e>`, `<eu>`, `<nlba>`, `<sp>`, `<v>`, `<alt>`)
+- header boilerplates (`gabcheader`, `nabcheader`)
+- common neume and division helpers
+
 ## Notes about highlighting
 
 When Tree-sitter support is available, the plugin registers `gregorio` for `gabc` files.
 If Tree-sitter is unavailable, Neovim uses the static fallback in `syntax/gabc.vim`.
+
+The static fallback is the comprehensive port from `gregorio.nvim-old` and includes:
+
+- structured header highlighting (`key: value;`, numeric and LaTeX-enabled headers)
+- full GABC note-section tokens (pitches, bars, custos, spacing, and inline chant tags)
+- NABC notation support (St. Gall/Laon code families and modifiers)
+- error highlighting for invalid GABC/NABC snippets
 
 ## License
 
