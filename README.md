@@ -18,6 +18,13 @@ It integrates:
   - `:GabcTransposeUp`
   - `:GabcTransposeDown`
   - `:GabcFillParens`
+  - `:GabcConvertLigaturesToTags`
+  - `:GabcConvertTagsToLigatures`
+- Reusable resources imported from `gregorio.nvim-old`:
+  - `snippets/gabc.snippets`
+  - `templates/basic_gabc_template.gabc`
+  - `templates/nabc_gabc_template.gabc`
+  - `templates/advanced_gabc_template.gabc`
 
 ## Requirements
 
@@ -77,6 +84,18 @@ require("gregorio").setup({
 | `:GabcTransposeUp` | Transpose notes in notation groups upward |
 | `:GabcTransposeDown` | Transpose notes in notation groups downward |
 | `:GabcFillParens` | Replace empty groups like `()` with `(f)` |
+| `:GabcConvertLigaturesToTags` | Convert `æ`, `ǽ`, `œ` to `<sp>` tags in chant body |
+| `:GabcConvertTagsToLigatures` | Convert `<sp>` ligature tags back to Unicode ligatures |
+
+## Snippets and templates
+
+This repository also provides reusable resources imported from `gregorio.nvim-old`:
+
+- Snippet pack: `snippets/gabc.snippets` (SnipMate/UltiSnips format)
+- Starter templates:
+  - `templates/basic_gabc_template.gabc`
+  - `templates/nabc_gabc_template.gabc`
+  - `templates/advanced_gabc_template.gabc`
 
 ## Notes about highlighting
 

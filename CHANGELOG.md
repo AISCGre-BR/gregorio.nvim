@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Imported additional useful resources from `gregorio.nvim-old`:
+  - New utility commands:
+    - `:GabcConvertLigaturesToTags` (converts `æ`, `ǽ`, `œ` to `<sp>` tags in chant body)
+    - `:GabcConvertTagsToLigatures` (converts `<sp>` ligature tags back to Unicode ligatures)
+  - Snippet pack at `snippets/gabc.snippets` (SnipMate/UltiSnips format)
+  - Reusable template files:
+    - `templates/basic_gabc_template.gabc`
+    - `templates/nabc_gabc_template.gabc`
+    - `templates/advanced_gabc_template.gabc`
+
 ### Changed
 
 - Replaced the minimal static syntax fallback (`syntax/gabc.vim`) with a
