@@ -94,6 +94,20 @@ local function apply_on_range(transform, opts)
   vim.api.nvim_buf_set_lines(bufnr, start_line, end_line + 1, false, lines)
 end
 
+local function apply_on_body(transform)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local separator = find_separator_line(bufnr)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+
+  for i, line in ipairs(lines) do
+    if i > separator then
+      lines[i] = transform(line)
+    end
+  end
+
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+end
+
 function M.transpose_up(opts)
   apply_on_range(function(line)
     return transpose_line(line, 1)
@@ -110,6 +124,24 @@ function M.fill_parens(opts)
   apply_on_range(function(line)
     return line:gsub("%(%s*%)", "(f)")
   end, opts)
+end
+
+function M.convert_ligatures_to_tags()
+  apply_on_body(function(line)
+    line = line:gsub("æ", "<sp>ae</sp>")
+    line = line:gsub("ǽ", "<sp>'ae</sp>")
+    line = line:gsub("œ", "<sp>oe</sp>")
+    return line
+  end)
+end
+
+function M.convert_tags_to_ligatures()
+  apply_on_body(function(line)
+    line = line:gsub("<sp>ae</sp>", "æ")
+    line = line:gsub("<sp>'ae</sp>", "ǽ")
+    line = line:gsub("<sp>oe</sp>", "œ")
+    return line
+  end)
 end
 
 return M
