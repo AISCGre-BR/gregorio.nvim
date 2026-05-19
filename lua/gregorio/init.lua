@@ -35,7 +35,8 @@ local function setup_treesitter(opts)
   end
 
   local ok, parsers = pcall(require, "nvim-treesitter.parsers")
-  if ok then
+  -- get_parser_configs() foi removida no nvim-treesitter >= 1.0
+  if ok and type(parsers.get_parser_configs) == "function" then
     local parser_configs = parsers.get_parser_configs()
     if not parser_configs.gregorio then
       parser_configs.gregorio = {
