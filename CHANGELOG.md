@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-05-19
+
+### Fixed
+
+- `GabcTransposeUp` and `GabcTransposeDown`: with a character-wise visual
+  selection (`v`), the transform is now applied only to the selected columns
+  of the line instead of the entire line. The column boundaries are read from
+  the `'<`/`'>` marks and verified against the command's range to avoid false
+  positives from stale marks.
+
 ## [0.3.0] - 2026-05-19
 
 ### Fixed

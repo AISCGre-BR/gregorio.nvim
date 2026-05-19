@@ -167,6 +167,8 @@ end
 
 -- Applies a block transform to only the body lines of the selected range,
 -- clamping the start to the first body line when the range covers the header.
+-- For character-wise single-line selection ('v'), restricts the transform to
+-- the selected columns rather than the whole line.
 local function apply_on_range(transform, opts)
   local bufnr = vim.api.nvim_get_current_buf()
   local separator = find_separator_line(bufnr)
@@ -175,6 +177,24 @@ local function apply_on_range(transform, opts)
   if effective_start > end_line then
     return
   end
+
+  if vim.fn.visualmode() == "v" and effective_start == end_line then
+    local spos = vim.fn.getpos("'<")
+    local epos = vim.fn.getpos("'>")
+    -- Only use column info when the marks match the command's range
+    -- (avoids false positives from stale marks after a command-line range).
+    if spos[2] - 1 == effective_start and epos[2] - 1 == end_line then
+      local scol = spos[3] -- 1-indexed, inclusive start column
+      local ecol = epos[3] -- 1-indexed, inclusive end column (may be large for EOL)
+      local line =
+        vim.api.nvim_buf_get_lines(bufnr, effective_start, effective_start + 1, false)[1] or ""
+      local e = math.min(ecol, #line)
+      local new_line = line:sub(1, scol - 1) .. transform(line:sub(scol, e)) .. line:sub(e + 1)
+      vim.api.nvim_buf_set_lines(bufnr, effective_start, effective_start + 1, false, { new_line })
+      return
+    end
+  end
+
   local lines = vim.api.nvim_buf_get_lines(bufnr, effective_start, end_line + 1, false)
   local text = table.concat(lines, "\n")
   local new_text = transform(text)
