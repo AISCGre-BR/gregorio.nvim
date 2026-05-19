@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-05-19
+
+### Fixed
+
+- `setup_treesitter()` no longer crashes on nvim-treesitter ≥ 1.0, which
+  removed `parsers.get_parser_configs()`. The call is now guarded with
+  `type(parsers.get_parser_configs) == "function"` so that on older versions
+  `:TSInstall gregorio` still works, while on newer versions the block is
+  silently skipped. Runtime treesitter support (syntax highlighting via
+  `vim.treesitter.language.register`) is unaffected on all versions.
+
 ## [0.2.0] - 2026-05-18
 
 ### Changed
