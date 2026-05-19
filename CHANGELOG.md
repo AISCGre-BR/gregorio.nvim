@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- `GabcTransposeUp`, `GabcTransposeDown`, and `GabcFillParens` now operate on the
+  **entire chant body** when called without an explicit range or visual selection.
+  When a range or visual selection is given, only the selected lines are affected.
+- `GabcFillParens` now fills each empty note group `()` with the **last pitch letter
+  of the nearest preceding non-empty note group**, tracking state across the entire
+  selected region or body. Example: `(fgh) () () (ij) () ()` →
+  `(fgh) (h) (h) (ij) (j) (j)`.
+- `GabcTransposeUp` and `GabcTransposeDown` now correctly skip **NABC segments** in
+  mixed GABC/NABC note groups, reading the `nabc-lines` header to determine which
+  pipe-separated segments are GABC. With `nabc-lines: N`, segment at pipe-index `i`
+  is GABC when `i % (N + 1) == 0`. Example with `nabc-lines: 2`:
+  `(AAAA|BBBB|CCCC|DDDD|EEEE|FFFF)` → only `AAAA` and `DDDD` are transposed.
+- `GabcTransposeUp` and `GabcTransposeDown` correctly transpose **accidentals**
+  (`gx`, `hy`, `i#`) and **explicit custos** (`f+`, `g+`): the base note letter is
+  shifted while the modifier character (`x`, `y`, `#`, `+`) is preserved.
+
 ## [0.1.0] - 2026-05-18
 
 ### Added

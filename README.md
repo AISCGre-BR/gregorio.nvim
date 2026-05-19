@@ -91,9 +91,9 @@ Set any individual key to `false` to disable only that mapping.
 
 | Command | Description |
 |---|---|
-| `:GabcTransposeUp` | Transpose notes in notation groups upward (supports ranges) |
-| `:GabcTransposeDown` | Transpose notes in notation groups downward (supports ranges) |
-| `:GabcFillParens` | Replace empty groups like `()` with `(f)` (supports ranges) |
+| `:GabcTransposeUp` | Transpose notes in notation groups upward |
+| `:GabcTransposeDown` | Transpose notes in notation groups downward |
+| `:GabcFillParens` | Fill empty note groups with the last preceding pitch |
 | `:GabcConvertLigaturesToTags` | Convert `æ`, `ǽ`, `œ` to `<sp>` tags in chant body |
 | `:GabcConvertTagsToLigatures` | Convert `<sp>` ligature tags back to Unicode ligatures |
 
@@ -113,10 +113,24 @@ All keymaps can be overridden or disabled via `setup()` (see [Configuration](#co
 
 ### Command behavior details
 
-- Range-aware commands (`GabcTransposeUp`, `GabcTransposeDown`, `GabcFillParens`) only modify the chant body section, i.e. lines after the `%%` header/body separator.
-- `GabcTransposeUp` and `GabcTransposeDown` only transpose note letters inside note groups `(...)`; bracketed fragments `[...]` inside groups are preserved.
-- `GabcFillParens` turns empty or whitespace-only groups (`()`, `(   )`) into `(f)`.
-- Ligature conversion commands operate on the whole chant body and keep headers untouched.
+- **Range awareness** (`GabcTransposeUp`, `GabcTransposeDown`, `GabcFillParens`):
+  when called without an explicit range or visual selection, the command operates on the
+  **entire chant body** (all lines after `%%`). When a range or visual selection is
+  given, only the selected lines are affected. Header lines are never modified.
+- **Transpose scope**: only note letters inside notation groups `(...)` are shifted;
+  bracketed fragments `[...]` inside groups are preserved.
+  Accidentals (`gx`, `hy`, `i#`) and explicit custos (`f+`, `g+`) are handled correctly:
+  the base pitch letter is transposed while the modifier character is preserved.
+- **NABC awareness**: when the `nabc-lines` header is present, `GabcTransposeUp` and
+  `GabcTransposeDown` only transpose the GABC segments inside mixed note groups.
+  Pipe-separated segment at index `i` is GABC when `i % (nabc-lines + 1) == 0`.
+  Example with `nabc-lines: 2`: in `(AAAA|BBBB|CCCC|DDDD|EEEE|FFFF)`, only `AAAA`
+  and `DDDD` are transposed.
+- **Fill parens**: `GabcFillParens` fills each empty group (`()` or `( )`) with the
+  last pitch letter of the nearest preceding non-empty group, tracking state across
+  the entire selected region or body.
+  Example: `(fgh) () () () (ij) () ()` → `(fgh) (h) (h) (h) (ij) (j) (j)`.
+- Ligature conversion commands always operate on the whole chant body.
 
 ## Snippets and templates
 
