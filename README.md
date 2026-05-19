@@ -74,8 +74,18 @@ require("gregorio").setup({
     enabled = true,
     cmd = { "gregorio-lsp" },
   },
+  keymaps = {
+    enabled = true,             -- set to false to disable all keymaps
+    transpose_up   = "<LocalLeader>tu",
+    transpose_down = "<LocalLeader>td",
+    fill_parens    = "<LocalLeader>fp",
+    convert_ligatures_to_tags = "<LocalLeader>lt",
+    convert_tags_to_ligatures = "<LocalLeader>tl",
+  },
 })
 ```
+
+Set any individual key to `false` to disable only that mapping.
 
 ## Commands
 
@@ -86,6 +96,20 @@ require("gregorio").setup({
 | `:GabcFillParens` | Replace empty groups like `()` with `(f)` (supports ranges) |
 | `:GabcConvertLigaturesToTags` | Convert `æ`, `ǽ`, `œ` to `<sp>` tags in chant body |
 | `:GabcConvertTagsToLigatures` | Convert `<sp>` ligature tags back to Unicode ligatures |
+
+## Keymaps
+
+Buffer-local keymaps are set automatically for `gabc` files (normal and visual mode where applicable):
+
+| Key | Command | Modes |
+|---|---|---|
+| `<LocalLeader>tu` | `GabcTransposeUp` | `n`, `x` |
+| `<LocalLeader>td` | `GabcTransposeDown` | `n`, `x` |
+| `<LocalLeader>fp` | `GabcFillParens` | `n`, `x` |
+| `<LocalLeader>lt` | `GabcConvertLigaturesToTags` | `n` |
+| `<LocalLeader>tl` | `GabcConvertTagsToLigatures` | `n` |
+
+All keymaps can be overridden or disabled via `setup()` (see [Configuration](#configuration)).
 
 ### Command behavior details
 

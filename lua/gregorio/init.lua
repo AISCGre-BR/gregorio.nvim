@@ -11,6 +11,14 @@ local defaults = {
     enabled = true,
     language = "gregorio",
   },
+  keymaps = {
+    enabled = true,
+    transpose_up = "<LocalLeader>tu",
+    transpose_down = "<LocalLeader>td",
+    fill_parens = "<LocalLeader>fp",
+    convert_ligatures_to_tags = "<LocalLeader>lt",
+    convert_tags_to_ligatures = "<LocalLeader>tl",
+  },
 }
 
 local function merge_options(opts)
@@ -66,6 +74,52 @@ local function setup_lsp(opts)
   })
 end
 
+local function setup_keymaps(opts)
+  if not opts.keymaps.enabled then
+    return
+  end
+
+  vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("gregorio_keymaps", { clear = true }),
+    pattern = "gabc",
+    callback = function(args)
+      local buf = args.buf
+      local km = opts.keymaps
+
+      if km.transpose_up then
+        vim.keymap.set("n", km.transpose_up, "<cmd>GabcTransposeUp<CR>",
+          { buffer = buf, desc = "Transpose GABC notes up", silent = true })
+        vim.keymap.set("x", km.transpose_up, ":GabcTransposeUp<CR>",
+          { buffer = buf, desc = "Transpose GABC notes up", silent = true })
+      end
+
+      if km.transpose_down then
+        vim.keymap.set("n", km.transpose_down, "<cmd>GabcTransposeDown<CR>",
+          { buffer = buf, desc = "Transpose GABC notes down", silent = true })
+        vim.keymap.set("x", km.transpose_down, ":GabcTransposeDown<CR>",
+          { buffer = buf, desc = "Transpose GABC notes down", silent = true })
+      end
+
+      if km.fill_parens then
+        vim.keymap.set("n", km.fill_parens, "<cmd>GabcFillParens<CR>",
+          { buffer = buf, desc = "Fill empty GABC note groups", silent = true })
+        vim.keymap.set("x", km.fill_parens, ":GabcFillParens<CR>",
+          { buffer = buf, desc = "Fill empty GABC note groups", silent = true })
+      end
+
+      if km.convert_ligatures_to_tags then
+        vim.keymap.set("n", km.convert_ligatures_to_tags, "<cmd>GabcConvertLigaturesToTags<CR>",
+          { buffer = buf, desc = "Convert ligatures to <sp> tags", silent = true })
+      end
+
+      if km.convert_tags_to_ligatures then
+        vim.keymap.set("n", km.convert_tags_to_ligatures, "<cmd>GabcConvertTagsToLigatures<CR>",
+          { buffer = buf, desc = "Convert <sp> tags to ligatures", silent = true })
+      end
+    end,
+  })
+end
+
 local function create_commands()
   vim.api.nvim_create_user_command("GabcTransposeUp", function(opts)
     commands.transpose_up(opts)
@@ -92,6 +146,7 @@ function M.setup(opts)
   local options = merge_options(opts)
   setup_treesitter(options)
   setup_lsp(options)
+  setup_keymaps(options)
   create_commands()
 end
 

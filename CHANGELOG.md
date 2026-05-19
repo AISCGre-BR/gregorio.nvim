@@ -4,17 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-18
+
 ### Added
 
-- Imported additional useful resources from `gregorio.nvim-old`:
-  - New utility commands:
-    - `:GabcConvertLigaturesToTags` (converts `æ`, `ǽ`, `œ` to `<sp>` tags in chant body)
-    - `:GabcConvertTagsToLigatures` (converts `<sp>` ligature tags back to Unicode ligatures)
-  - Snippet pack at `snippets/gabc.snippets` (SnipMate/UltiSnips format)
-  - Reusable template files:
-    - `templates/basic_gabc_template.gabc`
-    - `templates/nabc_gabc_template.gabc`
-    - `templates/advanced_gabc_template.gabc`
+- Initial Neovim plugin scaffolding for GABC/NABC support.
+- Tree-sitter integration path for `tree-sitter-gregorio`.
+- Static Vim syntax fallback for GABC.
+- Automatic `gregorio-lsp` startup for `gabc` buffers.
+- Editing commands:
+  - `:GabcTransposeUp`
+  - `:GabcTransposeDown`
+  - `:GabcFillParens`
+  - `:GabcConvertLigaturesToTags` (converts `æ`, `ǽ`, `œ` to `<sp>` tags in chant body)
+  - `:GabcConvertTagsToLigatures` (converts `<sp>` ligature tags back to Unicode ligatures)
+- Buffer-local keymaps for all editing commands, active in `gabc` buffers:
+  - `<LocalLeader>tu` → `GabcTransposeUp` (normal + visual)
+  - `<LocalLeader>td` → `GabcTransposeDown` (normal + visual)
+  - `<LocalLeader>fp` → `GabcFillParens` (normal + visual)
+  - `<LocalLeader>lt` → `GabcConvertLigaturesToTags` (normal)
+  - `<LocalLeader>tl` → `GabcConvertTagsToLigatures` (normal)
+  - Configurable via `keymaps` table in `setup()`; set `enabled = false` to disable all,
+    or set individual keys to `false` to disable specific mappings.
+- Snippet pack at `snippets/gabc.snippets` (SnipMate/UltiSnips format)
+- Reusable template files:
+  - `templates/basic_gabc_template.gabc`
+  - `templates/nabc_gabc_template.gabc`
+  - `templates/advanced_gabc_template.gabc`
 
 ### Changed
 
@@ -35,21 +51,8 @@ All notable changes to this project will be documented in this file.
     Tironian letters, horizontal spacing adjustment.
   - Error highlighting for invalid characters in GABC/NABC snippets.
   - Embedded LaTeX syntax (`@texSyntax`) inside `<v>` verbatim tags.
-- Improved `README.md` documentation based on the current `gregorio.nvim-old`
-  ported behavior:
+- Improved `README.md` documentation:
   - Documented detailed command scope and range behavior in chant body (`%%` separator).
   - Expanded fallback highlighting coverage notes for GABC/NABC support.
   - Expanded snippets/templates documentation with practical resource categories.
-
-## [0.1.0] - 2026-05-18
-
-### Added
-
-- Initial Neovim plugin scaffolding for GABC/NABC support.
-- Tree-sitter integration path for `tree-sitter-gregorio`.
-- Static Vim syntax fallback for GABC.
-- Automatic `gregorio-lsp` startup for `gabc` buffers.
-- Editing commands:
-  - `:GabcTransposeUp`
-  - `:GabcTransposeDown`
-  - `:GabcFillParens`
+  - Added keymaps reference table and configuration examples.
