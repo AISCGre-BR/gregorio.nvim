@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Removed the legacy `nvim-treesitter.parsers.get_parser_configs()` compatibility
+  shim from `setup_treesitter()`. The plugin no longer depends on `nvim-treesitter`
+  in any way; Tree-sitter support is provided entirely through Neovim's built-in
+  `vim.treesitter` API. Users who want Tree-sitter highlighting must place a compiled
+  `gregorio` parser (built from
+  [AISCGre-BR/tree-sitter-gregorio](https://github.com/AISCGre-BR/tree-sitter-gregorio))
+  in a `parser/` directory on Neovim's `runtimepath`. See `README.md` for details.
+
 ## [0.3.1] - 2026-05-19
 
 ### Fixed
