@@ -40,8 +40,8 @@ lua/gregorio/
 2. Do not remove Tree-sitter or LSP integration paths.
 3. Preserve fallback static syntax behavior.
 4. Keep command names stable:
-   - `GabcTransposeUp`
-   - `GabcTransposeDown`
+   - `GabcNoteShiftUp`
+   - `GabcNoteShiftDown`
    - `GabcFillParens`
 5. Update `CHANGELOG.md` and `README.md` when functionality changes.
 

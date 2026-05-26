@@ -13,8 +13,8 @@ local defaults = {
   },
   keymaps = {
     enabled = true,
-    transpose_up = "<LocalLeader>tu",
-    transpose_down = "<LocalLeader>td",
+    note_shift_up = "<LocalLeader>su",
+    note_shift_down = "<LocalLeader>sd",
     fill_parens = "<LocalLeader>fp",
     convert_ligatures_to_tags = "<LocalLeader>lt",
     convert_tags_to_ligatures = "<LocalLeader>tl",
@@ -22,7 +22,22 @@ local defaults = {
 }
 
 local function merge_options(opts)
-  return vim.tbl_deep_extend("force", {}, defaults, opts or {})
+  local user_keymaps = (opts or {}).keymaps or {}
+  local options = vim.tbl_deep_extend("force", {}, defaults, opts or {})
+  local keymaps = options.keymaps or {}
+
+  if user_keymaps.note_shift_up == nil and user_keymaps.transpose_up ~= nil then
+    keymaps.note_shift_up = user_keymaps.transpose_up
+  end
+
+  if user_keymaps.note_shift_down == nil and user_keymaps.transpose_down ~= nil then
+    keymaps.note_shift_down = user_keymaps.transpose_down
+  end
+
+  keymaps.transpose_up = nil
+  keymaps.transpose_down = nil
+
+  return options
 end
 
 local function setup_treesitter(opts)
@@ -71,18 +86,18 @@ local function setup_keymaps(opts)
       local buf = args.buf
       local km = opts.keymaps
 
-      if km.transpose_up then
-        vim.keymap.set("n", km.transpose_up, "<cmd>GabcTransposeUp<CR>",
-          { buffer = buf, desc = "Transpose GABC notes up", silent = true })
-        vim.keymap.set("x", km.transpose_up, ":GabcTransposeUp<CR>",
-          { buffer = buf, desc = "Transpose GABC notes up", silent = true })
+      if km.note_shift_up then
+        vim.keymap.set("n", km.note_shift_up, "<cmd>GabcNoteShiftUp<CR>",
+          { buffer = buf, desc = "Shift GABC notes up", silent = true })
+        vim.keymap.set("x", km.note_shift_up, ":GabcNoteShiftUp<CR>",
+          { buffer = buf, desc = "Shift GABC notes up", silent = true })
       end
 
-      if km.transpose_down then
-        vim.keymap.set("n", km.transpose_down, "<cmd>GabcTransposeDown<CR>",
-          { buffer = buf, desc = "Transpose GABC notes down", silent = true })
-        vim.keymap.set("x", km.transpose_down, ":GabcTransposeDown<CR>",
-          { buffer = buf, desc = "Transpose GABC notes down", silent = true })
+      if km.note_shift_down then
+        vim.keymap.set("n", km.note_shift_down, "<cmd>GabcNoteShiftDown<CR>",
+          { buffer = buf, desc = "Shift GABC notes down", silent = true })
+        vim.keymap.set("x", km.note_shift_down, ":GabcNoteShiftDown<CR>",
+          { buffer = buf, desc = "Shift GABC notes down", silent = true })
       end
 
       if km.fill_parens then
@@ -106,13 +121,21 @@ local function setup_keymaps(opts)
 end
 
 local function create_commands()
+  vim.api.nvim_create_user_command("GabcNoteShiftUp", function(opts)
+    commands.note_shift_up(opts)
+  end, { range = true, desc = "Shift GABC notes up" })
+
+  vim.api.nvim_create_user_command("GabcNoteShiftDown", function(opts)
+    commands.note_shift_down(opts)
+  end, { range = true, desc = "Shift GABC notes down" })
+
   vim.api.nvim_create_user_command("GabcTransposeUp", function(opts)
-    commands.transpose_up(opts)
-  end, { range = true, desc = "Transpose GABC notes up" })
+    commands.note_shift_up(opts)
+  end, { range = true, desc = "Deprecated alias for GabcNoteShiftUp" })
 
   vim.api.nvim_create_user_command("GabcTransposeDown", function(opts)
-    commands.transpose_down(opts)
-  end, { range = true, desc = "Transpose GABC notes down" })
+    commands.note_shift_down(opts)
+  end, { range = true, desc = "Deprecated alias for GabcNoteShiftDown" })
 
   vim.api.nvim_create_user_command("GabcFillParens", function(opts)
     commands.fill_parens(opts)

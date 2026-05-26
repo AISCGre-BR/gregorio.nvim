@@ -15,8 +15,8 @@ It integrates:
 - Static syntax highlighting fallback (`syntax/gabc.vim`)
 - Automatic LSP startup with `gregorio-lsp` for `gabc` buffers
 - Editing commands (ported from `gregorio.nvim-old` and adapted to current architecture):
-  - `:GabcTransposeUp`
-  - `:GabcTransposeDown`
+  - `:GabcNoteShiftUp`
+  - `:GabcNoteShiftDown`
   - `:GabcFillParens`
   - `:GabcConvertLigaturesToTags`
   - `:GabcConvertTagsToLigatures`
@@ -111,8 +111,8 @@ require("gregorio").setup({
   },
   keymaps = {
     enabled = true,             -- set to false to disable all keymaps
-    transpose_up   = "<LocalLeader>tu",
-    transpose_down = "<LocalLeader>td",
+    note_shift_up   = "<LocalLeader>su",
+    note_shift_down = "<LocalLeader>sd",
     fill_parens    = "<LocalLeader>fp",
     convert_ligatures_to_tags = "<LocalLeader>lt",
     convert_tags_to_ligatures = "<LocalLeader>tl",
@@ -126,8 +126,8 @@ Set any individual key to `false` to disable only that mapping.
 
 | Command | Description |
 |---|---|
-| `:GabcTransposeUp` | Transpose notes in notation groups upward |
-| `:GabcTransposeDown` | Transpose notes in notation groups downward |
+| `:GabcNoteShiftUp` | Shift notes in notation groups upward |
+| `:GabcNoteShiftDown` | Shift notes in notation groups downward |
 | `:GabcFillParens` | Fill empty note groups with the last preceding pitch |
 | `:GabcConvertLigaturesToTags` | Convert `æ`, `ǽ`, `œ` to `<sp>` tags in chant body |
 | `:GabcConvertTagsToLigatures` | Convert `<sp>` ligature tags back to Unicode ligatures |
@@ -138,8 +138,8 @@ Buffer-local keymaps are set automatically for `gabc` files (normal and visual m
 
 | Key | Command | Modes |
 |---|---|---|
-| `<LocalLeader>tu` | `GabcTransposeUp` | `n`, `x` |
-| `<LocalLeader>td` | `GabcTransposeDown` | `n`, `x` |
+| `<LocalLeader>su` | `GabcNoteShiftUp` | `n`, `x` |
+| `<LocalLeader>sd` | `GabcNoteShiftDown` | `n`, `x` |
 | `<LocalLeader>fp` | `GabcFillParens` | `n`, `x` |
 | `<LocalLeader>lt` | `GabcConvertLigaturesToTags` | `n` |
 | `<LocalLeader>tl` | `GabcConvertTagsToLigatures` | `n` |
@@ -148,7 +148,7 @@ All keymaps can be overridden or disabled via `setup()` (see [Configuration](#co
 
 ### Command behavior details
 
-- **Range awareness** (`GabcTransposeUp`, `GabcTransposeDown`, `GabcFillParens`):
+- **Range awareness** (`GabcNoteShiftUp`, `GabcNoteShiftDown`, `GabcFillParens`):
   when called without an explicit range or visual selection, the command operates on the
   **entire chant body** (all lines after `%%`). When a range or visual selection is
   given, only the selected lines are affected. Header lines are never modified.
@@ -156,8 +156,8 @@ All keymaps can be overridden or disabled via `setup()` (see [Configuration](#co
   bracketed fragments `[...]` inside groups are preserved.
   Accidentals (`gx`, `hy`, `i#`) and explicit custos (`f+`, `g+`) are handled correctly:
   the base pitch letter is transposed while the modifier character is preserved.
-- **NABC awareness**: when the `nabc-lines` header is present, `GabcTransposeUp` and
-  `GabcTransposeDown` only transpose the GABC segments inside mixed note groups.
+- **NABC awareness**: when the `nabc-lines` header is present, `GabcNoteShiftUp` and
+  `GabcNoteShiftDown` only shift the GABC segments inside mixed note groups.
   Pipe-separated segment at index `i` is GABC when `i % (nabc-lines + 1) == 0`.
   Example with `nabc-lines: 2`: in `(AAAA|BBBB|CCCC|DDDD|EEEE|FFFF)`, only `AAAA`
   and `DDDD` are transposed.
@@ -166,6 +166,10 @@ All keymaps can be overridden or disabled via `setup()` (see [Configuration](#co
   the entire selected region or body.
   Example: `(fgh) () () () (ij) () ()` → `(fgh) (h) (h) (h) (ij) (j) (j)`.
 - Ligature conversion commands always operate on the whole chant body.
+
+`GabcTransposeUp` / `GabcTransposeDown` remain available as deprecated aliases, and
+`setup({ keymaps = { transpose_up = ..., transpose_down = ... } })` is still accepted
+for backward compatibility.
 
 ## Snippets and templates
 

@@ -227,7 +227,7 @@ local function make_transpose_transform(direction, nabc_lines)
   end
 end
 
-function M.transpose_up(opts)
+function M.note_shift_up(opts)
   local nabc_lines = get_nabc_lines(vim.api.nvim_get_current_buf())
   local transform = make_transpose_transform(1, nabc_lines)
   if opts.range == 0 then
@@ -237,7 +237,7 @@ function M.transpose_up(opts)
   end
 end
 
-function M.transpose_down(opts)
+function M.note_shift_down(opts)
   local nabc_lines = get_nabc_lines(vim.api.nvim_get_current_buf())
   local transform = make_transpose_transform(-1, nabc_lines)
   if opts.range == 0 then
@@ -246,6 +246,9 @@ function M.transpose_down(opts)
     apply_on_range(transform, opts)
   end
 end
+
+M.transpose_up = M.note_shift_up
+M.transpose_down = M.note_shift_down
 
 function M.fill_parens(opts)
   if opts.range == 0 then

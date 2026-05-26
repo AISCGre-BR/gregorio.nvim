@@ -4,8 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-26
+
 ### Changed
 
+- Renamed the primary note-shifting commands from `GabcTransposeUp` /
+  `GabcTransposeDown` to `GabcNoteShiftUp` / `GabcNoteShiftDown`, and changed the
+  default buffer-local keymaps accordingly from `<LocalLeader>tu` / `<LocalLeader>td`
+  to `<LocalLeader>su` / `<LocalLeader>sd`. The old command names and `setup()`
+  keymap options remain available as deprecated aliases for backward compatibility.
 - Removed the legacy `nvim-treesitter.parsers.get_parser_configs()` compatibility
   shim from `setup_treesitter()`. The plugin no longer depends on `nvim-treesitter`
   in any way; Tree-sitter support is provided entirely through Neovim's built-in
