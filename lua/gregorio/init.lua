@@ -33,22 +33,6 @@ local function setup_treesitter(opts)
   if vim.treesitter and vim.treesitter.language and vim.treesitter.language.register then
     pcall(vim.treesitter.language.register, opts.treesitter.language, "gabc")
   end
-
-  local ok, parsers = pcall(require, "nvim-treesitter.parsers")
-  -- get_parser_configs() foi removida no nvim-treesitter >= 1.0
-  if ok and type(parsers.get_parser_configs) == "function" then
-    local parser_configs = parsers.get_parser_configs()
-    if not parser_configs.gregorio then
-      parser_configs.gregorio = {
-        install_info = {
-          url = "https://github.com/AISCGre-BR/tree-sitter-gregorio",
-          files = { "src/parser.c" },
-          branch = "main",
-        },
-        filetype = "gabc",
-      }
-    end
-  end
 end
 
 local function setup_lsp(opts)

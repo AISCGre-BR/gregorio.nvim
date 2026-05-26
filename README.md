@@ -29,7 +29,7 @@ It integrates:
 ## Requirements
 
 - Neovim 0.9+
-- Optional for Tree-sitter features: `nvim-treesitter` + installed `gregorio` parser
+- Optional for Tree-sitter features: compiled `gregorio` parser on Neovim's `runtimepath`
 - Optional for LSP features: `gregorio-lsp` in `$PATH`
 
 Install `gregorio-lsp`:
@@ -39,6 +39,41 @@ cargo install --git https://github.com/AISCGre-BR/gregorio-lsp --tag v0.7.0 --bi
 ```
 
 ## Installation
+
+### Tree-sitter parser
+
+Tree-sitter syntax highlighting uses Neovim's built-in Tree-sitter API directly —
+`nvim-treesitter` is **not** required.
+
+To enable it, place a compiled `gregorio` parser shared library
+(`gregorio.so` / `gregorio.dll`) in a `parser/` directory on Neovim's
+`runtimepath`. The source lives at
+[`AISCGre-BR/tree-sitter-gregorio`](https://github.com/AISCGre-BR/tree-sitter-gregorio).
+
+**Option A — tree-sitter CLI**
+
+```sh
+git clone https://github.com/AISCGre-BR/tree-sitter-gregorio
+cd tree-sitter-gregorio
+tree-sitter build          # produces gregorio.so / gregorio.dll
+cp gregorio.so ~/.config/nvim/parser/
+```
+
+**Option B — nvim-treesitter ≥ 1.0 (optional, if already installed)**
+
+Add `gregorio` to `ensure_installed` in your nvim-treesitter setup and point it
+to the custom repository:
+
+```lua
+require("nvim-treesitter.configs").setup({
+  ensure_installed = { "gregorio" },
+})
+```
+
+> **Note**: automatic parser registration via nvim-treesitter's legacy
+> `get_parser_configs()` API (removed in nvim-treesitter ≥ 1.0) is no longer
+> performed by this plugin. If the compiled parser is absent, Neovim falls back
+> automatically to the static `syntax/gabc.vim` highlighter.
 
 ### lazy.nvim
 
