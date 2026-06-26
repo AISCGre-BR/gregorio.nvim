@@ -1,5 +1,16 @@
 # gregorio.nvim
 
+> [!NOTE]
+> **AI-Assisted Development**
+>
+> This project is developed, fully or in part, with LLM/generative AI assistance.
+> All LLM-proposed changes go through human review and local testing before being committed.
+>
+> If you object to software built with generative AI assistance, we respect your opinion
+> and regret we cannot meet your expectations. In that case, we kindly recommend exploring
+> alternative solutions. If you know of any, feel free to open an issue — we'll be happy
+> to include them in our documentation.
+
 Neovim plugin for **GABC/NABC** (Gregorio) files.
 
 It integrates:
