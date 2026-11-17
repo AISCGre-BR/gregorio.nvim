@@ -46,7 +46,7 @@ It integrates:
 Install `gregorio-lsp`:
 
 ```sh
-cargo install --git https://github.com/AISCGre-BR/gregorio-lsp --tag v0.7.0 --bin gregorio-lsp
+cargo install --git https://github.com/AISCGre-BR/gregorio-lsp --tag v0.13.0 gregorio-server --bin gregorio-lsp
 ```
 
 ## Installation
@@ -119,6 +119,16 @@ require("gregorio").setup({
   lsp = {
     enabled = true,
     cmd = { "gregorio-lsp" },
+    -- Server settings (see gregorio-lsp's CONFIG.md); {} keeps the defaults.
+    settings = {
+      linting = { severity = "warning", ignoreRules = { "isolated-strophae" } },
+      formatting = {
+        maxLineWidth = 80,
+        breakAfterClef = true,
+        breakAfterBar = true,
+        wordPerLine = "auto", -- "auto" | "always" | "never" (gregorio-lsp >= 0.12.0)
+      },
+    },
   },
   keymaps = {
     enabled = true,             -- set to false to disable all keymaps
@@ -142,6 +152,7 @@ Set any individual key to `false` to disable only that mapping.
 | `:GabcFillParens` | Fill empty note groups with the last preceding pitch |
 | `:GabcConvertLigaturesToTags` | Convert `æ`, `ǽ`, `œ` to `<sp>` tags in chant body |
 | `:GabcConvertTagsToLigatures` | Convert `<sp>` ligature tags back to Unicode ligatures |
+| `:GabcFormat` | Format the buffer with `gregorio-lsp` (same as `vim.lsp.buf.format()`) |
 
 ## Keymaps
 

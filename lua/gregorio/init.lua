@@ -6,6 +6,10 @@ local defaults = {
   lsp = {
     enabled = true,
     cmd = { "gregorio-lsp" },
+    -- Sent with workspace/didChangeConfiguration (see gregorio-lsp's
+    -- CONFIG.md), e.g. { formatting = { wordPerLine = "always" } }.
+    -- Empty keeps the server defaults.
+    settings = {},
   },
   treesitter = {
     enabled = true,
@@ -67,8 +71,11 @@ local function setup_lsp(opts)
         vim.lsp.start({
           name = "gregorio-lsp",
           cmd = opts.lsp.cmd,
-          root_dir = vim.fs.root(args.buf, { ".git" }) or vim.loop.cwd(),
-        })
+          root_dir = vim.fs.root(args.buf, { ".git" }) or (vim.uv or vim.loop).cwd(),
+          -- Neovim pushes non-empty settings with didChangeConfiguration
+          -- right after initialization.
+          settings = opts.lsp.settings,
+        }, { bufnr = args.buf })
       end
     end,
   })
@@ -144,6 +151,10 @@ local function create_commands()
   vim.api.nvim_create_user_command("GabcConvertLigaturesToTags", function()
     commands.convert_ligatures_to_tags()
   end, { desc = "Convert ligatures to <sp> tags in GABC body" })
+
+  vim.api.nvim_create_user_command("GabcFormat", function()
+    vim.lsp.buf.format({ name = "gregorio-lsp" })
+  end, { desc = "Format the GABC buffer with gregorio-lsp" })
 
   vim.api.nvim_create_user_command("GabcConvertTagsToLigatures", function()
     commands.convert_tags_to_ligatures()

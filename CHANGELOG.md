@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- `lsp.settings` option: a table sent to `gregorio-lsp` with
+  `workspace/didChangeConfiguration` (keys `linting` and `formatting`, as in
+  gregorio-lsp's `CONFIG.md`). This exposes the `wordPerLine` formatting
+  setting of gregorio-lsp 0.12.0 and allows ignoring rules such as the new
+  `isolated-strophae` diagnostic.
+- `:GabcFormat` command: formats the buffer with `gregorio-lsp`.
+
+### Changed
+
+- The language server is attached explicitly to the buffer that triggered it
+  and uses `vim.uv` when available.
+- Install instructions point to gregorio-lsp `v0.13.0` (`gregorio-server` crate).
+
 ## [0.4.0] - 2026-05-26
 
 ### Changed
