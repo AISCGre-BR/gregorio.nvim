@@ -46,7 +46,7 @@ It integrates:
 Install `gregorio-lsp`:
 
 ```sh
-cargo install --git https://github.com/AISCGre-BR/gregorio-lsp --tag v0.12.0 gregorio-server --bin gregorio-lsp
+cargo install --git https://github.com/AISCGre-BR/gregorio-lsp --tag v0.13.0 gregorio-server --bin gregorio-lsp
 ```
 
 ## Installation
